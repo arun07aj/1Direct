@@ -14,6 +14,8 @@ browser.storage.local.get('redirectEnabled').then((result) => {
 
 // Function to extract the domain from a URL
 function extractDomain(url) {
+  if (!url) 
+    return null;
   const a = document.createElement('a');
   a.href = url;
   return a.hostname;
@@ -25,13 +27,18 @@ browser.webRequest.onBeforeRequest.addListener(
     const currentDomain = extractDomain(details.originUrl);  
     const newDomain = extractDomain(details.url);            
 
+    // Allow redirection when opening from new tab or blank page
+    if (!currentDomain || currentDomain === "about:blank") {
+        return {};  
+    }
+
     // Block if domains are different and redirection is disabled
     if (currentDomain !== newDomain && !redirectEnabled) {
       browser.notifications.create({
         type: 'basic',
         iconUrl: 'icon.png', 
         title: 'Redirection Blocked',
-        message: `Redirection to ${newDomain} was blocked.`
+        message: `Redirection to ${newDomain} was blocked from ${currentDomain}.`
       });
 
       return { cancel: true };  // Block the redirection
