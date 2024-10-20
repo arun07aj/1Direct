@@ -29,7 +29,7 @@ browser.webRequest.onBeforeRequest.addListener(
     if (currentDomain !== newDomain && !redirectEnabled) {
       browser.notifications.create({
         type: 'basic',
-        // iconUrl: 'icons/icon.png',  // TODO: need to add an icon later
+        iconUrl: 'icon.png', 
         title: 'Redirection Blocked',
         message: `Redirection to ${newDomain} was blocked.`
       });
